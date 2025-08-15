@@ -43,13 +43,36 @@ def extrair_caracteristicas(df, index):
     else:
         volatility = bb_width / bb_middle
     
+    # Calcular RSI se disponível
+    rsi = df['rsi'].iloc[index] if 'rsi' in df.columns else 0
+    
+    # Calcular posição do MACD se disponível
+    macd_position = 0
+    if 'macd' in df.columns and 'macd_signal' in df.columns:
+        macd = df['macd'].iloc[index]
+        macd_signal = df['macd_signal'].iloc[index]
+        # Evitar divisão por zero
+        if macd_signal != 0:
+            macd_position = macd / macd_signal
+    
+    # Calcular posição do Stochastic se disponível
+    stochastic_position = 0
+    if 'slowk' in df.columns and 'slowd' in df.columns:
+        slowk = df['slowk'].iloc[index]
+        slowd = df['slowd'].iloc[index]
+        # Evitar divisão por zero
+        if slowd != 0:
+            stochastic_position = slowk / slowd
+    
     caracteristicas = {
         'bb_position': bb_position,
         'adx': df['adx'].iloc[index],
         'volatility': volatility,
+        'rsi': rsi,
+        'macd_position': macd_position,
+        'stochastic_position': stochastic_position,
         'day_of_week': df['time'].iloc[index].dayofweek,
         'hour': df['time'].iloc[index].hour,
-        # Adicione mais características conforme necessário
     }
     
     return caracteristicas
@@ -69,7 +92,7 @@ def treinar_modelo(dados_trades):
         return None
     
     # Preparar os dados para treinamento
-    caracteristicas_cols = ['bb_position', 'adx', 'volatility', 'day_of_week', 'hour']
+    caracteristicas_cols = ['bb_position', 'adx', 'volatility', 'rsi', 'macd_position', 'stochastic_position', 'day_of_week', 'hour']
     X = dados_trades[caracteristicas_cols]
     y = dados_trades['resultado']  # 1 para lucro, 0 para prejuízo
     
@@ -125,6 +148,9 @@ def prever_qualidade_sinal(modelo, caracteristicas):
         caracteristicas['bb_position'],
         caracteristicas['adx'],
         caracteristicas['volatility'],
+        caracteristicas['rsi'],
+        caracteristicas['macd_position'],
+        caracteristicas['stochastic_position'],
         caracteristicas['day_of_week'],
         caracteristicas['hour']
     ]])

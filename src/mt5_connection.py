@@ -1,6 +1,7 @@
 import MetaTrader5 as mt5
 import pandas as pd
-from src.config import MODO_DEMO
+from src.config import MODO_DEMO, RISCO_POR_TRADE
+import time
 
 def conectar_mt5():
     """
@@ -143,3 +144,73 @@ def calcular_lote(ativo, risco_por_trade, stop_loss_distancia):
         lote = round(lote / lote_step) * lote_step
     
     return lote
+
+def enviar_ordem_compra(ativo, gestao):
+    """
+    Envia uma ordem de compra com base na gestão de risco.
+    
+    Args:
+        ativo (str): Símbolo do ativo.
+        gestao (dict): Dicionário com informações de gestão de risco.
+        
+    Returns:
+        dict: Resultado da operação de envio da ordem.
+    """
+    # Obter preço atual de compra
+    tick = mt5.symbol_info_tick(ativo)
+    if tick is None:
+        print(f"Não foi possível obter o preço atual para {ativo}")
+        return None
+    
+    price = tick.ask
+    
+    # Calcular lote com base no risco
+    lote = calcular_lote(ativo, RISCO_POR_TRADE, gestao['distancia_sl'])
+    
+    # Enviar ordem
+    result = enviar_ordem(
+        ativo=ativo,
+        tipo=mt5.ORDER_TYPE_BUY,
+        volume=lote,
+        price=price,
+        sl=gestao['stop_loss'],
+        tp=gestao['take_profit'],
+        comment="Compra Bollinger Bot"
+    )
+    
+    return result
+
+def enviar_ordem_venda(ativo, gestao):
+    """
+    Envia uma ordem de venda com base na gestão de risco.
+    
+    Args:
+        ativo (str): Símbolo do ativo.
+        gestao (dict): Dicionário com informações de gestão de risco.
+        
+    Returns:
+        dict: Resultado da operação de envio da ordem.
+    """
+    # Obter preço atual de venda
+    tick = mt5.symbol_info_tick(ativo)
+    if tick is None:
+        print(f"Não foi possível obter o preço atual para {ativo}")
+        return None
+    
+    price = tick.bid
+    
+    # Calcular lote com base no risco
+    lote = calcular_lote(ativo, RISCO_POR_TRADE, gestao['distancia_sl'])
+    
+    # Enviar ordem
+    result = enviar_ordem(
+        ativo=ativo,
+        tipo=mt5.ORDER_TYPE_SELL,
+        volume=lote,
+        price=price,
+        sl=gestao['stop_loss'],
+        tp=gestao['take_profit'],
+        comment="Venda Bollinger Bot"
+    )
+    
+    return result

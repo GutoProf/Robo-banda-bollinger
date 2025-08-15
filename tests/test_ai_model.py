@@ -17,6 +17,9 @@ class TestAIModel(unittest.TestCase):
             'bb_position': np.random.rand(50),
             'adx': np.random.rand(50) * 50,
             'volatility': np.random.rand(50) * 0.1,
+            'rsi': np.random.rand(50) * 100,
+            'macd_position': np.random.rand(50) * 2 - 1,  # Valores entre -1 e 1
+            'stochastic_position': np.random.rand(50) * 2 - 1,  # Valores entre -1 e 1
             'day_of_week': np.random.randint(0, 7, 50),
             'hour': np.random.randint(0, 24, 50),
             'resultado': np.random.randint(0, 2, 50)  # 0 ou 1
@@ -27,6 +30,9 @@ class TestAIModel(unittest.TestCase):
             'bb_position': 0.3,
             'adx': 25.0,
             'volatility': 0.05,
+            'rsi': 50.0,
+            'macd_position': 0.5,
+            'stochastic_position': 0.3,
             'day_of_week': 2,  # Quarta-feira
             'hour': 10
         }

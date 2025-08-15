@@ -29,6 +29,7 @@ Este projeto implementa um robô de trading automático em Python utilizando a A
 ├── data/                   # Armazena dados históricos e arquivos CSV de trades
 │   ├── trades_log.csv
 │   ├── market_data.csv
+│   ├── decisions_log.csv
 │
 ├── models/                 # Modelos treinados da IA
 │   ├── bollinger_ai.pkl
@@ -50,6 +51,7 @@ Este projeto implementa um robô de trading automático em Python utilizando a A
 │
 ├── requirements.txt        # Dependências do projeto
 ├── README.md               # Documentação do projeto
+├── CORRECOES.md            # Registro de correções e melhorias
 ```
 
 ## Configuração
@@ -66,3 +68,7 @@ Este projeto implementa um robô de trading automático em Python utilizando a A
 ## Aprendizado de Máquina
 
 O modelo de IA é treinado periodicamente com os dados dos trades anteriores. Ele analisa as condições de mercado no momento da entrada e classifica o potencial do sinal antes da execução.
+
+## Registro de Correções
+
+Consulte o arquivo `CORRECOES.md` para informações detalhadas sobre as correções de bugs e melhorias implementadas.

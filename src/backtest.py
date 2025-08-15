@@ -4,6 +4,7 @@ from src.strategy import preparar_dados_para_estrategia, verificar_sinal_compra,
 from src.risk_management import aplicar_gestao_risco
 from src.ai_model import extrair_caracteristicas, prever_qualidade_sinal, carregar_modelo
 from src.mt5_connection import obter_dados_historicos
+from src.indicators import calcular_rsi, calcular_macd, calcular_stochastic
 import MetaTrader5 as mt5
 import os
 from datetime import datetime
@@ -44,8 +45,11 @@ def executar_backtest(ativo, dados_historicos):
     Returns:
         dict: Resultados do backtest.
     """
-    # Preparar dados com indicadores
+    # Preparar dados com indicadores adicionais
     df = preparar_dados_para_estrategia(dados_historicos)
+    df = calcular_rsi(df)
+    df = calcular_macd(df)
+    df = calcular_stochastic(df)
     
     # Inicializar variáveis para resultados
     trades = []

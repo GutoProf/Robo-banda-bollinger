@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from src.indicators import calcular_bandas_bollinger, calcular_adx
+from src.indicators import calcular_bandas_bollinger, calcular_adx, calcular_rsi, calcular_macd, calcular_stochastic
 
 def verificar_sinal_compra(df):
     """
@@ -66,6 +66,9 @@ def preparar_dados_para_estrategia(df):
     """
     df = calcular_bandas_bollinger(df)
     df = calcular_adx(df)
+    df = calcular_rsi(df)
+    df = calcular_macd(df)
+    df = calcular_stochastic(df)
     
     return df
 

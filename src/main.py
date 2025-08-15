@@ -2,8 +2,8 @@ import pandas as pd
 import numpy as np
 import time
 from datetime import datetime
-from src.config import ATIVOS, RETRAIN_INTERVAL
-from src.mt5_connection import conectar_mt5, obter_dados_historicos
+from src.config import ATIVOS, RETRAIN_INTERVAL, RISCO_POR_TRADE
+from src.mt5_connection import conectar_mt5, obter_dados_historicos, enviar_ordem_compra, enviar_ordem_venda
 from src.strategy import preparar_dados_para_estrategia, verificar_sinal_compra, verificar_sinal_venda, filtrar_mercado_lateralizado
 from src.risk_management import aplicar_gestao_risco
 from src.ai_model import extrair_caracteristicas, prever_qualidade_sinal, carregar_modelo, treinar_modelo
@@ -119,9 +119,12 @@ def verificar_e_executar_sinais():
             }
             registrar_decisao(decision_info)
             
-            # Aqui você chamaria a função para enviar a ordem de compra
-            # enviar_ordem_compra(ativo, gestao)
-            print(f"Sinal de COMPRA para {ativo}. SL: {gestao['stop_loss']:.5f}, TP: {gestao['take_profit']:.5f}")
+            # Enviar ordem de compra
+            resultado = enviar_ordem_compra(ativo, gestao)
+            if resultado and resultado.retcode == mt5.TRADE_RETCODE_DONE:
+                print(f"Ordem de COMPRA enviada para {ativo}.")
+            else:
+                print(f"Falha ao enviar ordem de COMPRA para {ativo}. Erro: {resultado}")
         
         # Processar sinal de venda
         elif sinal_venda:
@@ -155,9 +158,12 @@ def verificar_e_executar_sinais():
             }
             registrar_decisao(decision_info)
             
-            # Aqui você chamaria a função para enviar a ordem de venda
-            # enviar_ordem_venda(ativo, gestao)
-            print(f"Sinal de VENDA para {ativo}. SL: {gestao['stop_loss']:.5f}, TP: {gestao['take_profit']:.5f}")
+            # Enviar ordem de venda
+            resultado = enviar_ordem_venda(ativo, gestao)
+            if resultado and resultado.retcode == mt5.TRADE_RETCODE_DONE:
+                print(f"Ordem de VENDA enviada para {ativo}.")
+            else:
+                print(f"Falha ao enviar ordem de VENDA para {ativo}. Erro: {resultado}")
 
 def main():
     """
